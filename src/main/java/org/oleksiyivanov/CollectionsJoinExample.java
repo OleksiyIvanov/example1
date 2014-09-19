@@ -12,14 +12,12 @@ public class CollectionsJoinExample {
         DBCollection accountsCollection = database.getCollection("accounts");
         DBCursor accountsCursor = accountsCollection.find();
         DBObject account;
-        int accountID;
 // Suppose we can fit all accounts into memory
         Map<Integer, DBObject> accountsMap = new HashMap<Integer, DBObject>();
         try {
             while(accountsCursor.hasNext()) {
                 account = accountsCursor.next();
-                accountID = ((Number)account.get("account_id")).intValue();
-                accountsMap.put(new Integer(accountID), account);
+                accountsMap.put((Integer)account.get("account_id"), account);
             }
         } finally {
             accountsCursor.close();
@@ -34,10 +32,9 @@ public class CollectionsJoinExample {
         try {
             while(tradesCursor.hasNext()) {
                 trade = tradesCursor.next();
-                accountID = ((Number)trade.get("account_id")).intValue();
 // Here we lookup for account information at HashMap
-                account = accountsMap.get(accountID);
-                System.out.println("Trade date: " + trade.get("date") + "  Account number: " + ((Number)account.get("account_number")).intValue()  + "  Account owner: "+account.get("owner") + "  Amount: " + trade.get("amount"));
+                account = accountsMap.get((Integer)trade.get("account_id"));
+                System.out.println("Trade date: " + trade.get("date") + "  Account number: " + (Integer)account.get("account_number")  + "  Account owner: " + account.get("owner") + "  Amount: " + trade.get("amount"));
             }
         } finally {
             tradesCursor.close();
